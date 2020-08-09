@@ -4197,6 +4197,8 @@
 	     * @instance
 	     */
 	    link: function ( pano, position, imageScale, imageSrc ) {
+			
+			
 
 	        let scale, img;
 
@@ -4254,7 +4256,22 @@
 	             * @property {string} method - Viewer function name
 	             * @property {*} data - The argument to be passed into the method
 	             */
-	            this.dispatchEvent( { type: 'panolens-viewer-handler', method: 'setPanorama', data: pano } );
+				 var counter=30;
+				 var timer = setInterval(()=>{
+					 if(counter>0){
+						 viewer_main.getCamera().fov = viewer_main.getCamera().fov-0.7;
+						 viewer_main.getCamera().updateProjectionMatrix();
+						 counter--;
+					 }
+					 else{
+						 clearInterval(timer);
+					 }
+				 },10)
+				
+				setTimeout(()=>{
+					this.dispatchEvent( { type: 'panolens-viewer-handler', method: 'setPanorama', data: pano } );
+				},300)
+	            
 
 	        }.bind( this ) );
 
@@ -4277,7 +4294,7 @@
 	        this.fadeInAnimation = new Tween.Tween( this.material )
 	            .easing( Tween.Easing.Quartic.Out )
 	            .onStart( function () {
-
+					
 	                this.visible = true;
 	                // this.material.visible = true;
 
@@ -4391,7 +4408,8 @@
 	     * @fires Panorama#enter-start
 	     */
 	    onEnter: function () {
-
+			console.log("Enter");
+			
 	        const duration = this.animationDuration;
 
 	        this.leaveTransition.stop();
@@ -4443,7 +4461,8 @@
 	     * @fires Panorama#leave
 	     */
 	    onLeave: function () {
-
+			console.log("Leave");
+			
 	        const duration = this.animationDuration;
 
 	        this.enterTransition.stop();
@@ -7737,7 +7756,8 @@
 	     * @instance
 	     */
 	    setPanorama: function ( pano ) {
-
+			
+			
 	        const leavingPanorama = this.panorama;
 
 	        if ( pano.type === 'panorama' && leavingPanorama !== pano ) {
@@ -7749,6 +7769,8 @@
 
 	                if ( leavingPanorama ) { leavingPanorama.onLeave(); }
 	                pano.removeEventListener( 'enter-fade-start', afterEnterComplete );
+					viewer_main.getCamera().fov = 60;
+					viewer_main.getCamera().updateProjectionMatrix();
 
 	            };
 
